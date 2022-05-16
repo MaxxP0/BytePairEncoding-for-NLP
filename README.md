@@ -1,7 +1,7 @@
 # BytePairEncoding-for-NLP
-A simple python BPE implementation
--vocab is sorted by token lengh and frequency
--with hard_stop=False, max_len=512, it encodes ~100 wikipedia articles per second
+A simple python BPE implementation;
+-vocab is sorted by token lengh and frequency;
+-with hard_stop=False, max_len=512, it encodes ~100 wikipedia articles per second;
 -wiki1k.vocab is a pretrained tokenizer, it was trained on 1k wikipedia articles and has a vocab size of 10_000
 
 How to Train, Encode, Decode
