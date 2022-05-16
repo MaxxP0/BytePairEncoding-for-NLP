@@ -16,6 +16,7 @@ class BPEtokenizer():
     def __len__(self):
         return len(self.tokens)
 
+    
     def load(cls,save_path):
         bpe = BPEtokenizer()
         bpe.tokens = pickle.load(Path(save_path).open('rb'))
