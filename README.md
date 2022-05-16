@@ -13,5 +13,6 @@ bpe.train(text,1000,75,'vocab')
 
 token_list = bpe.encode('Hello World this is the BPE tokenizer',4,False,True,True)
 print(token_list)
+
 for token in token_list:
    print(bpe.decode(token))
