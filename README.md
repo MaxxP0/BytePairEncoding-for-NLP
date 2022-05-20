@@ -19,7 +19,7 @@ bpe.train(text,1000,75,'vocab')
 
 Load
 ```python
-bpe = bpe.load('wiki1k.vocab')
+bpe = bpe.load('vocab')
 ```
 
 Encode and Decode
