@@ -14,12 +14,12 @@ bytes of data is replaced with a byte that does not occur within that data."""
 
 from BPE import BPEtokenizer
 bpe = BPEtokenizer()
-bpe.train(text,1000,75,'vocab')
+bpe.train(text,1000,75,'test.vocab')
 ```
 
 Load
 ```python
-bpe = bpe.load('vocab')
+bpe = bpe.load('test.vocab')
 ```
 
 Encode and Decode
