@@ -11,12 +11,17 @@ class BPEtokenizer():
         self.trained_tokenizer = None
         self.vocab = {}
         self.tokens = {'<unk>':0,'<pad>':1,'<sos>':2,'<eos>':3,'\n':4}
+        self.rep_tokens = {'whitespace':'</w>'}
 
 
     def __len__(self):
         return len(self.tokens)
 
-    
+
+    def __getitem__(self, index):
+        return list(self.tokens.items())[index]
+
+
     def load(cls,save_path):
         bpe = BPEtokenizer()
         bpe.tokens = pickle.load(Path(save_path).open('rb'))
@@ -38,7 +43,7 @@ class BPEtokenizer():
                 if len(new_corpus) > 0:
                     new_corpus[-1]+=(' ')
         
-        tokens = [" ".join(word.replace(' ', '</w>')) for word in new_corpus]
+        tokens = [" ".join(word.replace(' ', self.rep_tokens['whitespace'])) for word in new_corpus]
         
         # Count frequency of tokens in corpus
         self.vocab = Counter(tokens)
@@ -163,6 +168,7 @@ class BPEtokenizer():
                     hard_stop=False,
                     sos_token=False,
                     eos_token=False,
+                    unk_token=True,
                     long_tensor_format=None):
 
         """
@@ -183,6 +189,9 @@ class BPEtokenizer():
         eos_token : bool
             True  : a END of Sentence token will be the last token of the sequence
 
+        unk_token : bool
+            True  : a UNK token will be added to the sequence if the token is not in the vocabulary
+
         long_tensor_format : TensorObject
             None  : encoded sequence will be returned as python list of lists
             torch.LongTensor : the sequence will be returned as a torch Tensor
@@ -190,6 +199,8 @@ class BPEtokenizer():
         ___________
         return    : list        
         """
+
+
         encoded_word = []
 
         if sos_token == True:
@@ -228,7 +239,7 @@ class BPEtokenizer():
         #subwords are found
         for word in split:
             tokenized_lengh = 0
-            word0 = word.replace(' ','</w>')
+            word0 = word.replace(' ',self.rep_tokens['whitespace'])
 
             while tokenized_lengh <= len(word0):
                 word = word0[tokenized_lengh:]
@@ -243,7 +254,8 @@ class BPEtokenizer():
                             break
 
                         if (len(word[:index]) == 1) & (word[:index] not in self.tokens):
-                            encoded_word.append(self.tokens['<unk>'])
+                            if unk_token == True:
+                                encoded_word.append(self.tokens['<unk>'])
                             tokenized_lengh += 1
                             break
                     
@@ -298,14 +310,30 @@ class BPEtokenizer():
         return encoded_word
 
 
-    def decode(self,tokens):
+    def decode(self,tokens,skip_special_tokens=False):
+        """
+        parameters:
+        -----------
+        tokens : list
+            list of tokens to be decoded
+            
+        skip_special_tokens : bool
+            True  : special tokens will be skipped
+            False : special tokens will be decoded
+
+        
+        ___________
+        return    : string
+        """
         #decodes encodings and replaces
         #white space tokens with white
         #space
 
         string = ''
         for i in tokens:
+            if (skip_special_tokens==True) and (i<=3):
+                continue
             string += list(self.tokens)[i]
 
-        string = string.replace('</w>',' ')
+        string = string.replace(self.rep_tokens['whitespace'],' ')
         return string
