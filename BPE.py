@@ -139,9 +139,8 @@ class BPEtokenizer():
 
         self.build_vocab(corpus)
         for i in range(iterations):
-            print(len(self.get_token_pairs()))
-
             token_pair_lengh = len(self.get_token_pairs())
+            print(token_pair_lengh)
 
             if not vocab_size >= (token_pair_lengh+len(self.tokens)+1):
                 break
